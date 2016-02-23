@@ -6,6 +6,10 @@ var inherits = require('util').inherits,
 exports.RTSPParser = RTSPParser;
 
 function RTSPParser(type) {
+	if (!(this instanceof RTSPParser)) {
+		return new RTSPParser(type);
+	}
+
 	if (type !== RTSPParser.REQUEST && type !== RTSPParser.RESPONSE) {
 		throw new Error('bad type');
 	}
@@ -121,11 +125,11 @@ RTSPParser.prototype.REQUEST_LINE = function () {
 		throw new Error('Parse Error');
 	}
 
-	this.info.method = methods.indexOf(match[1]);
-	if (this.info.method === -1) {
+	if (methods.indexOf(match[1]) === -1) {
 		throw new Error('invalid request method');
 	}
 
+	this.info.method = match[1];
 	this.info.url = match[2];
 	this.info.versionMajor = +match[3];
 	this.info.versionMinor = +match[4];
