@@ -77,17 +77,15 @@ RTSPParser.prototype._write = function (chunk, encoding, callback) {
 
 RTSPParser.prototype.consumeLine = function () {
 	var end = this.end,
-		chunk = this.chunk;
+		chunk = this.chunk,
+		parsedLine;
 
 	for (var i = this.offset; i < end; i++) {
 		if (chunk[i] === 0x0a) {
-			var line = this.line + chunk.toString('ascii', this.offset, i);
-			if (line.charAt(line.length - 1) === '\r') {
-				line = line.substr(0, line.length - 1);
-			}
+			parsedLine = this.line + chunk.toString('ascii', this.offset, i - 1);
 			this.line = '';
 			this.offset = i + 1;
-			return line;
+			return parsedLine;
 		}
 	}
 
