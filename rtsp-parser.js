@@ -14,12 +14,8 @@ function RTSPParser(type) {
 
 	this.type = type;
 	this.state = type + '_LINE';
-	this.info = {
-		headers: []
-	};
-	this.trailers = [];
+	this.info = {headers: []};
 	this.line = '';
-	this.connection = '';
 	this.headerLength = 0;
 	this.contentLength = 0;
 }
@@ -81,7 +77,8 @@ RTSPParser.prototype._write = function (chunk, encoding, callback) {
 
 RTSPParser.prototype.consumeLine = function () {
 	var end = this.end,
-			chunk = this.chunk;
+		chunk = this.chunk;
+
 	for (var i = this.offset; i < end; i++) {
 		if (chunk[i] === 0x0a) {
 			var line = this.line + chunk.toString('ascii', this.offset, i);
@@ -120,6 +117,7 @@ RTSPParser.prototype.REQUEST_LINE = function () {
 	if (!line) {
 		return;
 	}
+
 	var match = requestExp.exec(line);
 	if (match === null) {
 		throw new Error('Parse Error');
@@ -142,10 +140,12 @@ RTSPParser.prototype.RESPONSE_LINE = function () {
 	if (!line) {
 		return;
 	}
+
 	var match = responseExp.exec(line);
 	if (match === null) {
 		throw new Error('Parse Error');
 	}
+
 	this.info.versionMajor = +match[1];
 	this.info.versionMinor = +match[2];
 	var statusCode = this.info.statusCode = +match[3];
@@ -162,23 +162,17 @@ RTSPParser.prototype.HEADER = function () {
 	if (line === undefined) {
 		return;
 	}
+
 	var info = this.info;
 	if (line) {
 		this.parseHeader(line, info.headers);
 	} else {
 		var headers = info.headers;
 		for (var i = 0; i < headers.length; i += 2) {
-			switch (headers[i].toLowerCase()) {
-				case 'content-length':
-					this.contentLength = +headers[i + 1];
-					break;
-				case 'connection':
-					this.connection += headers[i + 1].toLowerCase();
-					break;
+			if (headers[i].toLowerCase() === 'content-length') {
+				this.contentLength = +headers[i + 1];
 			}
 		}
-
-		this.contentLength = this.contentLength || 0;
 
 		this.emit('headersComplete', info);
 
