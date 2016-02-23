@@ -1,0 +1,29 @@
+{
+  "name": "rtsp-parser",
+  "version": "0.0.1",
+  "description": "RTSP parser",
+  "author": "Aleksey Timchenko <flegmatik.bel@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fleg/rtsp-parser.git"
+  },
+  "main": "rtsp-parser.js",
+  "files": [
+    "rtsp-parser.js"
+  ],
+  "scripts": {
+    "test": "mocha test/ --reporter spec",
+    "coverage": "istanbul cover _mocha -- --reporter spec --timeout 10000"
+  },
+  "keywords": [
+    "rtsp",
+    "parser"
+  ],
+  "devDependencies": {
+    "coveralls": "2.11.6",
+    "expect.js": "0.3.1",
+    "istanbul": "0.4.2",
+    "mocha": "2.4.5"
+  }
+}
